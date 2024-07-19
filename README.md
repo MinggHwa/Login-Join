@@ -1,30 +1,14 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + supabase 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+리액트 훅을 활용한 로그인 회원가입 기능입니다.
 
-Currently, two official plugins are available:
+# useForm 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+React-Hook-Form
+- 가장 인기 있는 폼 관리 라이브러리 중 하나입니다.
+- 성능이 좋고, 사용하기 쉬우며, 유효성 검사 기능이 내장되어 있습니다.
 
-## Expanding the ESLint configuration
+useForm
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+ 
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
