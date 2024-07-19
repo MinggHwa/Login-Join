@@ -1,28 +1,24 @@
-// import { useState } from 'react';
+import  { supabase as subbase } from '../utills/supabaseClient';
 import React, { useState } from 'react';
 import ButtonCommon from './ButtonCommon';
 
 interface LoginProps {
   // value: number | string;
-  setUserId: React.Dispatch<React.SetStateAction<string>>;
+  setUserEmail: React.Dispatch<React.SetStateAction<string>>;
   setUserPw: React.Dispatch<React.SetStateAction<string>>;
-  //setState: () => void; 좋지 않은 방법 - 인자 받아오는 state에 어울리지 않음.
+
 }
 
 
 
 export default function Login () {
 const [formValues, setFormValues] = useState({
-  userId: '',
+  userEmail: '',
   userPw: '',
 });
-//에러 - SetStateAction
-//type SetStateAction<S> = S | ((prevState: S) => S);
-//S 자체가 직접적인 업데이트를 나타내는 값이 될 수 있다.
-//setState(value) 처럼 값이 직접 변경되는 경우를 의미한다.
 
-// useState () => {
-//   onclick
+const [session, setSession] = useState<any>(null);
+
 const Change = (e: React.ChangeEvent<HTMLInputElement>) => {
   let { name, value } =  e.target ;
   
@@ -33,31 +29,56 @@ const Change = (e: React.ChangeEvent<HTMLInputElement>) => {
   
 }
 
-const handleLogin = () => {
-  console.log('User ID:', formValues.userId);
-  console.log('User PW:', formValues.userPw);
+const handleLogin = async (e:React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  console.log('Email:', formValues.userEmail);
+  console.log('Password:', formValues.userPw);
+
+  try {
+    const { data, error } = await subbase.auth.signInWithPassword({
+      email: formValues.userEmail,
+      password: formValues.userPw
+  });
+    if (error) {
+      console.error('Error fetching session:', error.message);
+      return;
+    }else {
+
+      setSession(data.session); 
+      alert('이동합니다.');
+        console.log('Sign In Success:', data.session);
+        window.location.href = 'https://www.naver.com/';
+    }
+    
+
+  } catch(err) {
+
+    console.error('error message',err);
+  }
+ 
+
 
 };
 
 
 
-// }
+
 
 return (
-  <form action="#">
+  <form action="#" onSubmit={handleLogin}>
   <fieldset>
     <legend>Login</legend>
     <div>
-  <label htmlFor='Id'>Id:<input type="text" name="userId" id='Id' required placeholder ='아이디' onChange={Change}/></label> 
-  {/* 원래는 input에 value를 넣으면 값넣고 싶을때 기존 value가 지원져야 하는데 react에서는 지워지지 않음 그래서 onChange로 변화를 감지해야함 */}
+  <label htmlFor='Email'>Email:<input type="email" name="userEmail" value={formValues.userEmail}  id='Email' required placeholder ='이메일' onChange={Change} /></label> 
+
     
     </div>
     <div>
-  <label htmlFor='Password'>Pw:<input type="text" name="userPw" id='Password' required onChange={Change} placeholder ='패스워드' /></label>
+  <label htmlFor='Password'>Pw:<input type="password" name="userPw" id='Password' value={formValues.userPw} required  placeholder ='패스워드' onChange={Change} /></label>
     
 
     </div>
-    <ButtonCommon name='로그인하기' type='submit' onClick={handleLogin}></ButtonCommon>
+    <ButtonCommon name='로그인하기' type='submit'></ButtonCommon>
 </fieldset>
   </form>
 
