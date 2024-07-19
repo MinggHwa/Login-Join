@@ -1,11 +1,11 @@
-// import { useState } from 'react';
+import  { supabase as subbase } from '../utills/supabaseClient';
 import ButtonCommon from './ButtonCommon';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 
 interface JoinProps {
   onClick?: ()=> void | undefined;
-  userId: string;
+  userEmail: string;
   userPw: string;
   userPwCheck:string;
 }
@@ -13,15 +13,36 @@ interface JoinProps {
 
 export default function Join ({}:JoinProps) {
   const { register, handleSubmit,watch, formState: { errors } } = useForm<JoinProps>( {mode: 'onBlur'});
-  const regExpId = /^(?=.*[a-z])[a-zA-Z0-9_]{5,15}$/ ;
-  const regExpPw = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@!~#\$%\^&\*\(\)_\+])[A-Za-z0-9@!~#\$%\^&\*\(\)_\+]{3,30}$/;
+  const regExpEmail =/^[a-z][a-z0-9]*@[a-z][a-z0-9]*\.[a-z]+$/ ;
+  const regExpPw = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@!~#\$%\^&\*\(\)_\+])[A-Za-z0-9@!~#\$%\^&\*\(\)_\+]{9,30}$/;
 
   const userPw = watch('userPw');
-  const userId = watch('userId');
+  const userEmail = watch('userEmail');
   const userPwCheck = watch('userPwCheck');
   
-  const onSubmit: SubmitHandler<JoinProps> = data => {
-    console.log(data);
+
+  
+  const onSubmit: SubmitHandler<JoinProps> = async ( data )=> {
+    
+    try {
+      const { userEmail, userPw }  =  data;
+      const { data: result, error } = await subbase.auth.signUp({
+        email: userEmail,
+        password: userPw,
+      });
+      if(error) {
+        console.error('error', error.message);
+
+      } else {
+        alert(result);
+        console.log('Sign Up Success:', result);
+      }
+    } catch (err){
+      console.error('Unexpected Error:', err);
+
+
+    }
+    
   };
 
 
@@ -33,18 +54,18 @@ export default function Join ({}:JoinProps) {
         <legend>Join NOW</legend>
         <div>
 
-          <label htmlFor="Id">
-            Id:<input type="text" id='Id' required placeholder ='아이디' 
+          <label htmlFor="Email">
+            Email:<input type="text" id='Email' required placeholder ='아이디' 
             {
-              ...register('userId', { required:true, pattern: regExpId }) 
+              ...register('userEmail', { required:true, pattern: regExpEmail }) 
             }
             
            />
        
             
           </label>
-          {errors.userId && (<>
-            <div>아이디는 5자리 이상 15자리 이상 영문 소문자와 숫자로만 사용가능합니다.</div>
+          {errors.userEmail && (<>
+            <div>이메일 형식을 확인해 주세요</div>
           </>
         
       )}
@@ -78,7 +99,7 @@ export default function Join ({}:JoinProps) {
        <div>
 
           <label htmlFor="PwCheck">
-            Pw:<input type="text" id='PwCheck' required placeholder ='비밀번호 확인'
+            PwCheck:<input type="text" id='PwCheck' required placeholder ='비밀번호 확인'
                {
                 ...register('userPwCheck', { required:true }) 
     
@@ -98,7 +119,7 @@ export default function Join ({}:JoinProps) {
             )  }
               
        </div>
-       <ButtonCommon name='가입하기' type='submit' disabled={!userId || !userPw || userPw !== userPwCheck}></ButtonCommon>
+       <ButtonCommon name='가입하기' type='submit' disabled={!userEmail || !userPw || userPw !== userPwCheck}></ButtonCommon>
       
 
       </fieldset>
