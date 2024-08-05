@@ -1,6 +1,8 @@
 import  { supabase as subbase } from '../utills/supabaseClient';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ButtonCommon from './ButtonCommon';
+import { useNavigate } from 'react-router-dom';
+import useStore from '../utills/useStore';
 
 interface LoginProps {
   // value: number | string;
@@ -10,14 +12,24 @@ interface LoginProps {
 }
 
 
-
 export default function Login () {
 const [formValues, setFormValues] = useState({
   userEmail: '',
   userPw: '',
 });
-
+const navigate = useNavigate();
 const [session, setSession] = useState<any>(null);
+console.log(session);
+
+useEffect(() => {
+  const fetchSession = async () => {
+    const { data } = await subbase.auth.getSession();
+    setSession(data.session);
+  };
+  
+  fetchSession();
+}, []);
+
 
 const Change = (e: React.ChangeEvent<HTMLInputElement>) => {
   let { name, value } =  e.target ;
@@ -40,14 +52,14 @@ const handleLogin = async (e:React.FormEvent<HTMLFormElement>) => {
       password: formValues.userPw
   });
     if (error) {
-      console.error('Error fetching session:', error.message);
+      alert(error);
       return;
     }else {
-
+      useStore.getState().setIsLoggedIn(true);
       setSession(data.session); 
       alert('이동합니다.');
         console.log('Sign In Success:', data.session);
-        window.location.href = 'https://www.naver.com/';
+        return navigate('/welcome');
     }
     
 
@@ -76,7 +88,7 @@ return (
     <div>
   <label htmlFor='Password'>Pw:<input type="password" name="userPw" id='Password' value={formValues.userPw} required  placeholder ='패스워드' onChange={Change} /></label>
     
-
+  
     </div>
     <ButtonCommon name='로그인하기' type='submit'></ButtonCommon>
 </fieldset>

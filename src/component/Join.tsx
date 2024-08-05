@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import  { supabase as subbase } from '../utills/supabaseClient';
 import ButtonCommon from './ButtonCommon';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -15,12 +16,13 @@ export default function Join ({}:JoinProps) {
   const { register, handleSubmit,watch, formState: { errors } } = useForm<JoinProps>( {mode: 'onBlur'});
   const regExpEmail =/^[a-z][a-z0-9]*@[a-z][a-z0-9]*\.[a-z]+$/ ;
   const regExpPw = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@!~#\$%\^&\*\(\)_\+])[A-Za-z0-9@!~#\$%\^&\*\(\)_\+]{9,30}$/;
-
+  const [errorMsg = 'yes', setErrorMsg] = useState<string | null>(null);
+  
   const userPw = watch('userPw');
   const userEmail = watch('userEmail');
   const userPwCheck = watch('userPwCheck');
   
-
+console.log(errorMsg);
   
   const onSubmit: SubmitHandler<JoinProps> = async ( data )=> {
     
@@ -30,15 +32,18 @@ export default function Join ({}:JoinProps) {
         email: userEmail,
         password: userPw,
       });
-      if(error) {
-        console.error('error', error.message);
-
-      } else {
-        alert(result);
-        console.log('Sign Up Success:', result);
-      }
+      if(result.user?.identities?.length === 0) {
+        setErrorMsg('이미 존재하는 이메일입니다.');
+      alert('이미 존재하는 이메일입니다.');
+       
+      } 
+    else if(error) {
+      setErrorMsg(error.message);
+      alert(error);
+     
+    }
     } catch (err){
-      console.error('Unexpected Error:', err);
+      alert(err);
 
 
     }
@@ -117,7 +122,7 @@ export default function Join ({}:JoinProps) {
                 입력하신 비밀번호와 일치하지 않습니다.
               </div>
             )  }
-              
+              {/* <input type="text" value='test' /> */}
        </div>
        <ButtonCommon name='가입하기' type='submit' disabled={!userEmail || !userPw || userPw !== userPwCheck}></ButtonCommon>
       

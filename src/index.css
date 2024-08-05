@@ -1,5 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: 'SUIT', sans-serif ;
+  src: url("https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css")
+    format("stylesheet");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'SUIT', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+    src: url('https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css') format("stylesheet");
+  }
+}
+
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'SUIT', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,6 +34,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 a {
